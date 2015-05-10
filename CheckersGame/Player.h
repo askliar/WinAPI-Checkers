@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <windef.h>
+#include "Field.h"
 
 struct point
 {
@@ -21,7 +22,7 @@ public:
 	wchar_t* getPass();
 	virtual void getData(HWND hDlg);
 	void recordButtons(int coords, HWND hWnd, int size);
-	void moveFigure(HWND hWnd, int size);
+	void moveFigure(HWND hWnd, int size, Field FieldInst);
 	void nullPoints();
 	virtual ~Player();
 };
