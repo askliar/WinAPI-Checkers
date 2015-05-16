@@ -21,22 +21,29 @@ public:
 	wchar_t *getName();
 	wchar_t* getPass();
 	virtual void getData(HWND hDlg);
-	void recordButtons(int coords, HWND hWnd, int size);
-	void moveFigure(HWND hWnd, int size, Field FieldInst);
+	int getScores();
+	void recordButtons(int coords, HWND hWnd, int size, Field &FieldInst, bool &dir);
+	virtual void moveFigure(HWND hWnd, int size, Field &FieldInst, bool &dir);
 	void nullPoints();
 	virtual ~Player();
 };
 
 class FirstPlayer: public Player
 {
+public:
 	FirstPlayer();
 	void getData(HWND hDlg) final override;
+	void moveFigure(HWND hWnd, int size, Field &FieldInst, bool &dir) override;
+	void eatFigure(HWND hWnd, int size);
 	~FirstPlayer();
 };
 
 class SecondPlayer: public Player
 {
+public:
 	SecondPlayer();
 	void getData(HWND hDlg) final override;
+	void moveFigure(HWND hWnd, int size, Field &FieldInst, bool &dir) override;
+	void eatFigure(HWND hWnd, int size);
 	~SecondPlayer();
 };

@@ -18,5 +18,15 @@ public:
 
 	int getSize();
 
+	void disableField(HWND hWnd);
+
+	void FPlayerScan(HWND hWnd);
+
+	void SPlayerScan(HWND hWnd);
+
+	bool FPlayerEatScan(HWND hWnd);
+
+	bool SPlayerEatScan(HWND hWnd);
+
 	~Field();
 };

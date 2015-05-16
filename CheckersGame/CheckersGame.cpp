@@ -10,7 +10,10 @@
 HINSTANCE hInst;								// current instance
 TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
-
+Game GameInst;
+FirstPlayer FPlayerInst;
+SecondPlayer SPlayerInst;
+bool dir = true;
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
 BOOL				InitInstance(HINSTANCE, int);
@@ -98,10 +101,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    HWND hWnd;
 
    hInst = hInstance; // Store instance handle in our global variable
-
    hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, hInstance, NULL);
-
+   GameInst.StartGame(hWnd);
    if (!hWnd)
    {
       return FALSE;
@@ -134,6 +136,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_COMMAND:
 		wmId    = LOWORD(wParam);
 		wmEvent = HIWORD(wParam);
+		if (wmId >= MY_ID_FIELD  && wmId <= MY_ID_FIELD + 64)
+		{
+			if (dir)
+			{
+				GameInst.FTurn(hWnd);
+				GameInst.FButtonRec(hWnd, wmId - MY_ID_FIELD, dir);
+				GameInst.FTurn(hWnd);
+			}
+			else if (!dir)
+			{
+				GameInst.STurn(hWnd);
+				GameInst.SButtonRec(hWnd, wmId - MY_ID_FIELD, dir);
+				GameInst.STurn(hWnd);
+			}
+		}
 		// Parse the menu selections:
 		switch (wmId)
 		{

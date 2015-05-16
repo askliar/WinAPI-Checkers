@@ -16,6 +16,10 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
+#include <windowsx.h>
+#include "Player.h"
+#include "Field.h"
+#include "Game.h"
 
 
 // TODO: reference additional headers your program requires here
