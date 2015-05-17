@@ -12,14 +12,12 @@ class Player
 {
 protected:
 	wchar_t *name;
-	wchar_t *password;
 	point src;
 	point dest;
 	int scores;
 public:
 	Player();
 	wchar_t *getName();
-	wchar_t* getPass();
 	virtual void getData(HWND hDlg);
 	int getScores();
 	void recordButtons(int coords, HWND hWnd, int size, Field &FieldInst, bool &dir);
