@@ -37,26 +37,7 @@ void Player::nullPoints()
 }
 
 void Player::recordButtons(int coords, HWND hWnd, int size, Field &FieldInst, bool &dir)
-{
-	wchar_t *str = new wchar_t[5];
-	if (src.x == -1 && src.y == -1) //если еще не записано откуда - записываем
-	{
-		GetWindowText(GetDlgItem(hWnd, coords + MY_ID_FIELD), str, 5);
-		if (!wcscmp(str, L"X") || !wcscmp(str, L"O"))
-		{
-			src.x = coords % size;
-			src.y = coords / size;
-		}
-	}
-	else if (src.x != -1 && src.y != -1) //если уже записано откуда - записываем куда
-	{
-		dest.x = coords % size;
-		dest.y = coords / size;
-		moveFigure(hWnd, size, FieldInst, dir);
-		nullPoints();
-	}
-	SetFocus(hWnd);
-}
+{}
 
 void Player::moveFigure(HWND hWnd, int size, Field& FieldInst, bool& dir)
 {
@@ -79,8 +60,30 @@ void FirstPlayer::getData(HWND hDlg)
 	scores = 0;
 }
 
-FirstPlayer::~FirstPlayer()
+void FirstPlayer::recordButtons(int coords, HWND hWnd, int size, Field& FieldInst, bool& dir)
 {
+
+	wchar_t *str = new wchar_t[5];
+	if (src.x == -1 && src.y == -1) //если еще не записано откуда - записываем
+	{
+		GetWindowText(GetDlgItem(hWnd, coords + MY_ID_FIELD), str, 5);
+		if (!wcscmp(str, L"X"))
+		{
+			src.x = coords % size;
+			src.y = coords / size;
+		}
+	}
+	else if ((src.x != -1 && src.y != -1) && abs(coords / size - src.y) == 1 && abs(coords % size - src.x) == 1) //если уже записано откуда - записываем куда
+	{
+		if (wcscmp(str, L"X"))
+		{
+			dest.x = coords % size;
+			dest.y = coords / size;
+			moveFigure(hWnd, size, FieldInst, dir);
+			nullPoints();
+		}
+	}
+	SetFocus(hWnd);
 
 }
 
@@ -95,11 +98,17 @@ void FirstPlayer::moveFigure(HWND hWnd, int size, Field& FieldInst, bool &dir)
 	{
 		if (dest.y - src.y == 1 && abs(dest.x - src.x) == 1 && !wcscmp(dst, L"")) //только вперед на пустое поле
 		{
-			FieldInst.swapField(MY_ID_FIELD + src.y * size + src.x, MY_ID_FIELD + dest.y* size + dest.x, L"x", hWnd);
+			FieldInst.swapField(MY_ID_FIELD + src.y * size + src.x, MY_ID_FIELD + dest.y* size + dest.x, L"X", hWnd);
 		}
 		if (abs(dest.y - src.y) == 1 && abs(dest.x - src.x) == 1 && !wcscmp(dst, L"O")) //"убийство" фигуры
 		{
-			eatFigure(hWnd, true);
+			eatFigure(hWnd, 8);
+			FieldInst.disableField(hWnd);
+			if (FieldInst.FPlayerPointScan(hWnd, 2 * dest.y - src.y, 2 * dest.x - src.x))
+			{
+				dir = true;
+				return;
+			}
 		}
 	}
 	delete str;
@@ -121,6 +130,11 @@ void FirstPlayer::eatFigure(HWND hWnd, int size)
 	}
 }
 
+FirstPlayer::~FirstPlayer()
+{
+
+}
+
 SecondPlayer::SecondPlayer() :Player()
 {
 
@@ -133,8 +147,30 @@ void SecondPlayer::getData(HWND hDlg)
 	scores = 0;
 }
 
-SecondPlayer::~SecondPlayer()
+void SecondPlayer::recordButtons(int coords, HWND hWnd, int size, Field& FieldInst, bool& dir)
 {
+
+	wchar_t *str = new wchar_t[5];
+	if (src.x == -1 && src.y == -1) //если еще не записано откуда - записываем
+	{
+		GetWindowText(GetDlgItem(hWnd, coords + MY_ID_FIELD), str, 5);
+		if (!wcscmp(str, L"O"))
+		{
+			src.x = coords % size;
+			src.y = coords / size;
+		}
+	}
+	else if ((src.x != -1 && src.y != -1) && abs(coords / size - src.y) == 1 && abs(coords % size - src.x) == 1) //если уже записано откуда - записываем куда
+	{
+		if (wcscmp(str, L"O"))
+		{
+			dest.x = coords % size;
+			dest.y = coords / size;
+			moveFigure(hWnd, size, FieldInst, dir);
+			nullPoints();
+		}
+	}
+	SetFocus(hWnd);
 
 }
 
@@ -153,7 +189,13 @@ void SecondPlayer::moveFigure(HWND hWnd, int size, Field& FieldInst, bool &dir)
 		}
 		if (abs(dest.y - src.y) == 1 && abs(dest.x - src.x) == 1 && !wcscmp(dst, L"X")) //"убийство" фигуры
 		{
-			eatFigure(hWnd, true);
+			eatFigure(hWnd, 8);
+			FieldInst.disableField(hWnd);
+			if (FieldInst.SPlayerPointScan(hWnd, 2 * dest.y - src.y, 2 * dest.x - src.x))
+			{
+				dir = false;
+				return;
+			}
 		}
 	}
 	delete str;
@@ -165,12 +207,17 @@ void SecondPlayer::moveFigure(HWND hWnd, int size, Field& FieldInst, bool &dir)
 void SecondPlayer::eatFigure(HWND hWnd, int size)
 {
 	wchar_t *str = new wchar_t[5];
-	GetWindowText(GetDlgItem(hWnd, MY_ID_FIELD + (2 * dest.y - src.y)  * size + 2 * dest.x - src.x), str, 5);
+	GetWindowText(GetDlgItem(hWnd, MY_ID_FIELD + (2 * dest.y - src.y) * size + 2 * dest.x - src.x), str, 5);
 	if (!wcscmp(str, L""))
 	{
 		SetWindowText(GetDlgItem(hWnd, MY_ID_FIELD + src.y * size + src.x), L"");
-		SetWindowText(GetDlgItem(hWnd, MY_ID_FIELD + (2 * dest.y - src.y) * size + 2 * dest.x - src.x), L"O");
+		SetWindowText(GetDlgItem(hWnd, MY_ID_FIELD + (2 * dest.y - src.y)  * size + 2 * dest.x - src.x), L"O");
 		SetWindowText(GetDlgItem(hWnd, MY_ID_FIELD + dest.y * size + dest.x), L"");
 		scores--;
 	}
+}
+
+SecondPlayer::~SecondPlayer()
+{
+
 }

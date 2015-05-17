@@ -110,12 +110,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	{
 		return FALSE;
 	}
-	DialogBox(hInst, MAKEINTRESOURCE(MY_ID_FPLAYER), hWnd, FPlayerDialog);
-	DialogBox(hInst, MAKEINTRESOURCE(MY_ID_SPLAYER), hWnd, SPlayerDialog);
 	GameInst.FTurn(hWnd);
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
-
+	DialogBox(hInst, MAKEINTRESOURCE(MY_ID_FPLAYER), hWnd, FPlayerDialog);
+	DialogBox(hInst, MAKEINTRESOURCE(MY_ID_SPLAYER), hWnd, SPlayerDialog);
 	return TRUE;
 }
 
@@ -223,6 +222,7 @@ INT_PTR CALLBACK FPlayerDialog(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 INT_PTR CALLBACK SPlayerDialog(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	UNREFERENCED_PARAMETER(lParam);
+	//SetFocus(GetDlgItem(hDlg, MY_ID_SLOGIN));
 	switch (message)
 	{
 	case WM_INITDIALOG:

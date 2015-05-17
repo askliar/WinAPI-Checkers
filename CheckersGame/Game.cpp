@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 #include "Game.h"
+#include "Player.h"
 
 Game::Game() : FieldInst(), FPlayer(), SPlayer()
 {}
@@ -30,7 +31,6 @@ void Game::FTurn(HWND hWnd)
 		FieldInst.disableField(hWnd);
 		FieldInst.FPlayerScan(hWnd);
 	}
-	MessageBox(hWnd, L"First Player Turn!", L"1st Player Turn", NULL);
 }
 
 void Game::STurn(HWND hWnd)
@@ -41,7 +41,6 @@ void Game::STurn(HWND hWnd)
 		FieldInst.disableField(hWnd);
 		FieldInst.SPlayerScan(hWnd);
 	}
-	MessageBox(hWnd, L"Second Player Turn!", L"2nd Player Turn", NULL);
 }
 
 void Game::FPlayerData(HWND hDlg)

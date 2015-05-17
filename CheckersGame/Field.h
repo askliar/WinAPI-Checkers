@@ -28,5 +28,9 @@ public:
 
 	bool SPlayerEatScan(HWND hWnd);
 
+	bool Field::FPlayerPointScan(HWND hWnd, int i, int j);
+
+	bool Field::SPlayerPointScan(HWND hWnd, int i, int j);
+
 	~Field();
 };
